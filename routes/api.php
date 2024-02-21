@@ -28,6 +28,11 @@ use App\Http\Controllers\Auth\orgs\OrganizationAuthController;
 //     return $request->user();
 // });
 
+Route::get('/userAgent', function (Request $request) {
+    return $userAgent = request()->header('User-Agent');
+});
+
+
 Route::get('/organizations', [OrganizationController::class, 'listOrganizations']);
 Route::get('/organizations/lists', [OrganizationController::class, 'listOrganizationsWithPaginate']);
 Route::get('organizations/single/{id}', [OrganizationController::class, 'show']);
