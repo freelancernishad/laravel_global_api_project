@@ -2,9 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\api\UserController;
 use App\Http\Controllers\api\AdminController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\api\StudentController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\Auth\users\AuthController;
 use App\Http\Controllers\api\OrganizationController;
 use App\Http\Controllers\Auth\admins\AdminAuthController;
@@ -27,6 +30,13 @@ use App\Http\Controllers\Auth\orgs\OrganizationAuthController;
 // Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 //     return $request->user();
 // });
+
+Route::apiResource('roles', RoleController::class);
+Route::apiResource('permissions', PermissionController::class);
+Route::post('get/permissions/{roleName}', [RoleController::class, 'getPermissionsByRoleName']);
+Route::post('roles/{role}/permissions/{permission}', [RolePermissionController::class, 'attachPermission']);
+Route::delete('roles/{role}/permissions/{permission}', [RolePermissionController::class, 'detachPermission']);
+
 
 Route::get('/userAgent', function (Request $request) {
     return $userAgent = request()->header('User-Agent');

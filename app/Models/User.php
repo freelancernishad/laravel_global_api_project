@@ -63,10 +63,6 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
-    public function donationLogs()
-    {
-        return $this->hasMany(DonationLog::class);
-    }
 
 
  // Required method from JWTSubject
@@ -80,5 +76,27 @@ class User extends Authenticatable implements JWTSubject
  {
      return [];
  }
+
+ public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles()->where('name', $role)->exists();
+    }
+
+    public function hasPermission($permission)
+    {
+        foreach ($this->roles as $role) {
+            if ($role->permissions->contains('name', $permission)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
 }
