@@ -3,11 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Log;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -33,6 +34,8 @@ class User extends Authenticatable implements JWTSubject
         'union',
         'org',
         'password',
+        'role',
+        'role_id',
 
     ];
 
@@ -78,24 +81,63 @@ class User extends Authenticatable implements JWTSubject
  }
 
  public function roles()
-    {
-        return $this->belongsToMany(Role::class);
-    }
+ {
+     return $this->belongsTo(Role::class, 'role_id');
+ }
+
+public function permissions()
+{
+    return $this->hasManyThrough(
+        Permission::class,
+        'role_permission', // Pivot table name
+        'user_id',         // Foreign key on the pivot table related to the User model
+        'role_id',         // Foreign key on the pivot table related to the Permission model
+        'id',              // Local key on the User model
+        'role_id'          // Local key on the pivot table related to the Permission model
+    );
+}
 
     public function hasRole($role)
     {
         return $this->roles()->where('name', $role)->exists();
     }
 
-    public function hasPermission($permission)
-    {
-        foreach ($this->roles as $role) {
-            if ($role->permissions->contains('name', $permission)) {
-                return true;
-            }
-        }
+    // public function hasPermission($permission)
+    // {
+    //     foreach ($this->roles as $role) {
+    //         if ($role->permissions->contains('name', $permission)) {
+    //             return true;
+    //         }
+    //     }
 
-        return false;
+    //     return false;
+    // }
+
+
+    public function hasPermission($routeName)
+    {
+        // Get the user's roles with eager loaded permissions
+        $permissions = $this->roles()->with('permissions')
+            ->get()
+            ->pluck('permissions')
+            ->flatten();
+
+
+
+
+        // Check if any of the user's permissions match the provided route name and permission name
+        $checkPermission =  $permissions->contains(function ($permission) use ($routeName) {
+
+            return true;
+
+            // Log:info($permission->name === $routeName && $permission->permission);
+            // return $permission->path === $routeName && $permission->permission;
+        });
+
+
+
+        return $checkPermission;
+
     }
 
 

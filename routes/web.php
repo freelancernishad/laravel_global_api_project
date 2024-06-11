@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Article;
+use App\Services\DateService;
+use App\Services\ContentService;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,4 +21,14 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
+
+
+
 require __DIR__.'/auth.php';
+
+
+Route::get('/files/{path}', function ($path) {
+
+    // Serve the file from the protected disk
+    return response()->file(Storage::disk('protected')->path($path));
+})->where('path', '.*');

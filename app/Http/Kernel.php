@@ -22,6 +22,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\IpAddressProtectionMiddleware::class,
+        \App\Http\Middleware\TrackVisitors::class, // Add this line here
 
     ];
 
@@ -42,8 +43,10 @@ class Kernel extends HttpKernel
 
         'api' => [
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            'throttle:6000,1',
+            // \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            
         ],
     ];
 
@@ -67,6 +70,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
         // 'ipProtection' => \App\Http\Middleware\IpAddressProtectionMiddleware::class,
+        'checkPermission' => \App\Http\Middleware\CheckPermission::class,
 
     ];
 }
