@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\InvoiceController;
 use App\Models\Article;
 use App\Services\DateService;
 use App\Services\ContentService;
@@ -25,6 +26,10 @@ Route::get('/', function () {
 
 
 require __DIR__.'/auth.php';
+
+
+
+Route::get('/invoice/{name}/{id}', [InvoiceController::class,'invoice']);
 
 
 Route::get('/files/{path}', function ($path) {

@@ -33,6 +33,7 @@
         },
         "files": [
             "app/helper/functions.php",
+            "app/helper/ekpay.php",
             "app/helper/imgur.php"
         ]
     },
