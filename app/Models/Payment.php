@@ -11,8 +11,8 @@ class Payment extends Model
     protected $fillable = [
         'union',
         'trxId',
-        'sonodId',
-        'sonod_type',
+        'userid',
+        'type',
         'amount',
         'applicant_mobile',
         'status',

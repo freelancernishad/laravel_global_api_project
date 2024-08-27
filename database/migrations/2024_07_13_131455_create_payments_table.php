@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id()->desc();
             $table->string('union');
             $table->string('trxId');
-            $table->unsignedBigInteger('sonodId');
-            $table->string('sonod_type');
+            $table->unsignedBigInteger('userid');
+            $table->string('type');
             $table->decimal('amount', 10, 2);
             $table->string('applicant_mobile');
             $table->string('status');
